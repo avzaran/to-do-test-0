@@ -42,6 +42,10 @@ function App() {
     localStorage.setItem("tasks", JSON.stringify(tasks));
   }, [tasks]);
 
+  const handleDeleteCompleted = () => {
+    setTasks(tasks.filter(task => !task.completed));
+  };
+
   return (
     <div>
       <TaskInput onAddTask={handleAddTask} />
@@ -49,6 +53,7 @@ function App() {
         <button onClick={()=> setFilter('all')}>All your tasks</button>
         <button onClick={()=> setFilter('active')}>Active tasks</button>
         <button onClick={()=> setFilter('completed')}>Completed tasks</button>
+        <button onClick={handleDeleteCompleted}>Delete all completed tasks</button>
       </div>
       <TaskList
         tasks={filteredTasks}
