@@ -10,6 +10,14 @@ function App() {
     return storedTasks ? JSON.parse(storedTasks) : [];
   });
 
+  const [filter, setFilter] = useState("all");
+
+  const filteredTasks = tasks.filter((task) => {
+    if (filter === "active") return !task.completed;
+    if (filter === "completed") return task.completed;
+    return true;
+  });
+
   const handleAddTask = (text) => {
     const newTask = {
       id: Date.now(),
@@ -37,8 +45,13 @@ function App() {
   return (
     <div>
       <TaskInput onAddTask={handleAddTask} />
+      <div>
+        <button onClick={()=> setFilter('all')}>All your tasks</button>
+        <button onClick={()=> setFilter('active')}>Active tasks</button>
+        <button onClick={()=> setFilter('completed')}>Completed tasks</button>
+      </div>
       <TaskList
-        tasks={tasks}
+        tasks={filteredTasks}
         onToggle={handleToggleTask}
         onDelete={handleDeleteTask}
       />
