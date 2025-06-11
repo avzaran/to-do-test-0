@@ -11,6 +11,19 @@ function App() {
   });
 
   const [filter, setFilter] = useState("all");
+  const [theme, setTheme] = useState(() => {
+    const savedTheme = localStorage.getItem("theme");
+    return savedTheme || "light";
+  });
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("theme", theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(prevTheme => prevTheme === "light" ? "dark" : "light");
+  };
 
   const filteredTasks = tasks.filter((task) => {
     if (filter === "active") return !task.completed;
@@ -34,6 +47,7 @@ function App() {
       )
     );
   };
+
   const handleDeleteTask = (id) => {
     setTasks(tasks.filter((task) => task.id !== id));
   };
@@ -47,14 +61,39 @@ function App() {
   };
 
   return (
-    <div>
-      <TaskInput onAddTask={handleAddTask} />
-      <div>
-        <button onClick={()=> setFilter('all')}>All your tasks</button>
-        <button onClick={()=> setFilter('active')}>Active tasks</button>
-        <button onClick={()=> setFilter('completed')}>Completed tasks</button>
-        <button onClick={handleDeleteCompleted}>Delete all completed tasks</button>
+    <div className="app-container">
+      <button className="theme-switch" onClick={toggleTheme}>
+        {theme === "light" ? "🌙" : "☀️"}
+      </button>
+      <header className="header">
+        <h1>Your task manager</h1>
+      </header>
+      <div className="task-input-container">
+        <TaskInput onAddTask={handleAddTask} />
       </div>
+      <div className="filter-buttons">
+        <button 
+          className={filter === 'all' ? 'active' : ''} 
+          onClick={() => setFilter('all')}
+        >
+          All tasks
+        </button>
+        <button 
+          className={filter === 'active' ? 'active' : ''} 
+          onClick={() => setFilter('active')}
+        >
+          Active
+        </button>
+        <button 
+          className={filter === 'completed' ? 'active' : ''} 
+          onClick={() => setFilter('completed')}
+        >
+          Completed
+        </button>
+      </div>
+      <button className="delete-button" onClick={handleDeleteCompleted}>
+        Delete completed tasks
+      </button>
       <TaskList
         tasks={filteredTasks}
         onToggle={handleToggleTask}
